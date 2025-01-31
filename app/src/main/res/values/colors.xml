@@ -2,6 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="neutral">#040405</color>
-
+    <color name="neutral">#e0e1e1</color>
+    <color name="call_background">#1A1A1A</color>
+    <color name="accept_green">#4CAF50</color>
+    <color name="reject_red">#F44336</color>
+    <color name="green">#4CAF50</color>
 </resources>

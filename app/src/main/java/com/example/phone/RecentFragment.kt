@@ -1,59 +1,129 @@
 package com.example.phone
 
+import android.net.Uri
 import android.os.Bundle
+import android.provider.CallLog
+import android.provider.ContactsContract
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.phone.Adapter.CallLogAdapter
+import com.example.phone.Model.CallLogItem
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [RecentFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class RecentFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var callLogAdapter: CallLogAdapter
+    private val callLogList = mutableListOf<CallLogItem>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recent, container, false)
+        val view = inflater.inflate(R.layout.fragment_recent, container, false)
+        recyclerView = view.findViewById(R.id.recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        callLogAdapter = CallLogAdapter(callLogList, requireContext())
+        recyclerView.adapter = callLogAdapter
+
+        fetchCallLogs()
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RecentFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RecentFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onResume() {
+        super.onResume()
+        fetchCallLogs()
+    }
+
+    private fun fetchCallLogs() {
+        callLogList.clear()
+        val contentResolver = context?.contentResolver
+
+        val projection = arrayOf(
+            CallLog.Calls.NUMBER,
+            CallLog.Calls.TYPE,
+            CallLog.Calls.DATE,
+            CallLog.Calls.DURATION
+        )
+
+        val cursor = contentResolver?.query(
+            CallLog.Calls.CONTENT_URI,
+            projection,
+            null,
+            null,
+            "${CallLog.Calls.DATE} DESC"
+        )
+
+        cursor?.use {
+            val numberIndex = it.getColumnIndex(CallLog.Calls.NUMBER)
+            val typeIndex = it.getColumnIndex(CallLog.Calls.TYPE)
+            val dateIndex = it.getColumnIndex(CallLog.Calls.DATE)
+            val durationIndex = it.getColumnIndex(CallLog.Calls.DURATION)
+
+            val currentTime = System.currentTimeMillis()
+            val today = Calendar.getInstance().apply { timeInMillis = currentTime }
+            val yesterday = Calendar.getInstance().apply { timeInMillis = currentTime }
+            yesterday.add(Calendar.DAY_OF_YEAR, -1)
+
+            while (it.moveToNext()) {
+                val number = it.getString(numberIndex) ?: "Unknown"
+                val type = it.getInt(typeIndex)
+                val dateMillis = it.getLong(dateIndex)
+                val duration = it.getInt(durationIndex)
+
+                val callDate = Calendar.getInstance().apply { timeInMillis = dateMillis }
+
+                if (isSameDay(callDate, today) || isSameDay(callDate, yesterday)) {
+                    val formattedDate = when {
+                        isSameDay(callDate, today) -> "Today"
+                        isSameDay(callDate, yesterday) -> "Yesterday"
+                        else -> SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date(dateMillis))
+                    }
+
+                    val typeString = when (type) {
+                        CallLog.Calls.INCOMING_TYPE -> "Incoming"
+                        CallLog.Calls.OUTGOING_TYPE -> "Outgoing"
+                        CallLog.Calls.MISSED_TYPE -> "Missed"
+                        CallLog.Calls.REJECTED_TYPE -> "Rejected"
+                        else -> "Unknown"
+                    }
+
+                    val contactName = getContactName(number) ?: number
+
+                    callLogList.add(CallLogItem(number, contactName, typeString, formattedDate, "$duration sec"))
                 }
             }
+        }
+
+        cursor?.close()
+        callLogAdapter.notifyDataSetChanged()
+    }
+
+    private fun isSameDay(cal1: Calendar, cal2: Calendar): Boolean {
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
+    }
+
+    private fun getContactName(phoneNumber: String): String? {
+        val uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber))
+        val cursor = requireContext().contentResolver.query(uri, arrayOf(ContactsContract.PhoneLookup.DISPLAY_NAME), null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                return it.getString(0)
+            }
+        }
+        return null
     }
 }

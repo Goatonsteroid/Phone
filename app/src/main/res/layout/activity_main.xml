@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
+    android:background="@color/white"
     >
 
     <FrameLayout
@@ -32,19 +33,19 @@
         android:orientation="vertical"
         android:gravity="center"
         android:layout_alignParentBottom="true"
-        android:elevation="10dp"
-        android:background="#f7f8f7"
-        android:visibility="gone"
-        >
+        android:elevation="12dp"
+        android:background="@drawable/keypad_bg"
+        android:padding="16dp"
+        android:visibility="gone">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/outer_layer"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_gravity="center"
             app:endIconMode="custom"
             app:endIconDrawable="@drawable/backspace"
-            app:boxStrokeWidth="0dp"
-            >
+            app:boxStrokeWidth="0dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/numberScreen"
@@ -54,114 +55,107 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:cursorVisible="true"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:textColor="@color/black"
                 />
-
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:dividerColor="@color/black"
-            />
+            android:layout_height="1dp"
+            android:layout_marginVertical="10dp"
+            app:dividerColor="@color/black"/>
 
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:columnCount="3"
-            android:orientation="horizontal"
-            android:paddingStart="10dp"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"
-            >
+            android:padding="8dp">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button1"
-                android:layout_width="120dp"
-                android:layout_height="70dp"
-                android:layout_marginEnd="12dp"
+                style="@style/KeypadButton"
                 android:text="1"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button2"
-                android:layout_width="120dp"
-                android:layout_height="70dp"
-                android:layout_marginEnd="12dp"
-                android:text="2"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button3"
-                android:layout_width="120dp"
-                android:layout_height="70dp"
-                android:text="3"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button4"
-                android:layout_width="120dp"
-                android:layout_height="70dp"
-                android:text="4"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button5"
-                android:layout_width="120dp"
-                android:layout_height="70dp"
-                android:text="5"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button6"
-                android:layout_width="120dp"
-                android:layout_height="70dp"
-                android:text="6"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button7"
-                android:layout_width="120dp"
-                android:layout_height="70dp"
-                android:text="7"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button8"
-                android:layout_width="120dp"
-                android:layout_height="70dp"
-                android:text="8"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button9"
-                android:layout_width="120dp"
-                android:layout_height="70dp"
-                android:text="9"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonStar"
-                android:layout_width="120dp"
-                android:layout_height="70dp"
-                android:text="*"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/button0"
-                android:layout_width="120dp"
-                android:layout_height="70dp"
-                android:text="0"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonHash"
-                android:layout_width="120dp"
-                android:layout_height="70dp"
-                android:text="#"
+                android:layout_marginEnd="50dp"
                 />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button2"
+                style="@style/KeypadButton"
+                android:text="2"
+                android:layout_marginEnd="50dp"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button3"
+                style="@style/KeypadButton"
+                android:text="3"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button4"
+                style="@style/KeypadButton"
+                android:text="4"
+                android:layout_marginEnd="50dp"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button5"
+                style="@style/KeypadButton"
+                android:text="5"
+                android:layout_marginEnd="50dp"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button6"
+                style="@style/KeypadButton"
+                android:text="6"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button7"
+                style="@style/KeypadButton"
+                android:text="7"
+                android:layout_marginEnd="50dp"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button8"
+                style="@style/KeypadButton"
+                android:text="8"
+                android:layout_marginEnd="50dp"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button9"
+                style="@style/KeypadButton"
+                android:text="9"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonStar"
+                style="@style/KeypadButton"
+                android:text="*"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/button0"
+                style="@style/KeypadButton"
+                android:text="0"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonHash"
+                style="@style/KeypadButton"
+                android:text="#"/>
         </GridLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/callButton"
-            android:layout_width="120dp"
-            android:layout_height="75dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
+            app:cornerRadius="40dp"
             app:icon="@drawable/phone"
             app:iconSize="30dp"
-            app:iconTint="@color/black"
-            android:text="Call"
-            />
-
-
+            app:iconTint="@color/white"
+            android:backgroundTint="@color/green"/>
     </LinearLayout>
 
 
@@ -173,6 +167,7 @@
         app:menu="@menu/menu"
         android:background="@color/white"
         app:labelVisibilityMode="labeled"
+        app:itemTextColor="@color/black"
         />
 
 </RelativeLayout>
