@@ -7,6 +7,7 @@ Users can view their recent calls in the call log. This log shows details like t
 3. Contact List
 The app fetches contacts from the device's contact book and displays them in a list. Each contact shows the name and phone number.
 Contacts can be searched through the integrated search bar to find specific contacts quickly.
+
 Requirements
 Android 6.0 (API 23) or higher
 Permissions:
